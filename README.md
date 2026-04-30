@@ -4,7 +4,7 @@ A keyboard-driven terminal UI for [termio](https://github.com/dcwestra/termio) â
 
 termui wraps the termio CLI in a visual interface built with [Textual](https://github.com/Textualize/textual), giving you a live alias list, detail panel, and quick access to every termio feature without leaving your terminal.
 
-![Tokyo Night themed TUI with alias list, detail panel, and key hint bar](.github/screenshot.png)
+<img width="1911" height="994" alt="Screenshot_20260430_113724" src="https://github.com/user-attachments/assets/ca5c748e-5197-4392-8205-7933e5450d9b" />
 
 ---
 
