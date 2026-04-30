@@ -1,0 +1,237 @@
+/* ── termio-tui theme — Tokyo Night inspired ─────────────────────────────────
+   Palette:
+     bg        #1a1b26   main background
+     bg-alt    #1e2030   alternate rows / panels
+     bg-dark   #13141f   header / footer
+     bg-hl     #292e42   cursor highlight
+     border    #2a2b3d   borders
+     blue      #7aa2f7
+     cyan      #7dcfff
+     green     #9ece6a
+     orange    #ff9e64
+     red       #f7768e
+     yellow    #e0af68
+     magenta   #bb9af7
+     fg        #c0caf5
+     fg-dim    #565f89
+──────────────────────────────────────────────────────────────────────────── */
+
+Screen {
+    background: #1a1b26;
+    color: #c0caf5;
+}
+
+/* ── Header (StatsHeader DEFAULT_CSS owns the layout; no overrides needed) ── */
+
+
+/* ── Main layout ─────────────────────────────────────────────────────────── */
+
+#main-layout {
+    height: 1fr;
+}
+
+#left-pane {
+    width: 2fr;
+    height: 100%;
+    border: round #2a2b3d;
+}
+
+/* ── Alias table ─────────────────────────────────────────────────────────── */
+
+DataTable {
+    background: #1a1b26;
+    color: #c0caf5;
+    scrollbar-background: #1a1b26;
+    scrollbar-color: #2a2b3d;
+    scrollbar-color-hover: #7aa2f7;
+    scrollbar-corner-color: #1a1b26;
+}
+
+DataTable > .datatable--header {
+    background: #13141f;
+    color: #7aa2f7;
+    text-style: bold;
+}
+
+DataTable > .datatable--header-cursor {
+    background: #292e42;
+    color: #7dcfff;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: #292e42;
+    color: #c0caf5;
+}
+
+DataTable > .datatable--even-row {
+    background: #1e2030;
+}
+
+DataTable > .datatable--odd-row {
+    background: #1a1b26;
+}
+
+/* ── Detail panel ────────────────────────────────────────────────────────── */
+
+DetailPanel {
+    width: 1fr;
+    height: 100%;
+    padding: 1 2;
+    border: round #2a2b3d;
+    background: #1e2030;
+    overflow-y: auto;
+    scrollbar-background: #1e2030;
+    scrollbar-color: #2a2b3d;
+}
+
+/* ── Add/Edit screen ─────────────────────────────────────────────────────── */
+
+#add-edit-body {
+    padding: 2 4;
+    height: 1fr;
+    background: #1a1b26;
+}
+
+#buttons {
+    margin-top: 2;
+}
+
+#buttons Button {
+    width: 24;
+    margin-right: 2;
+}
+
+/* ── Tunnels screen ──────────────────────────────────────────────────────── */
+
+#tunnel-help {
+    padding: 0 1;
+    height: 2;
+    color: #565f89;
+    background: #1a1b26;
+}
+
+#tunnel-table {
+    height: 1fr;
+    border: round #2a2b3d;
+}
+
+/* ── Snippets screen ─────────────────────────────────────────────────────── */
+
+#snip-header {
+    height: 2;
+    padding: 0 1;
+    background: #1a1b26;
+}
+
+#snip-body {
+    height: 1fr;
+}
+
+#snip-list-pane {
+    width: 2fr;
+    border: round #2a2b3d;
+}
+
+#snip-detail-pane {
+    width: 1fr;
+    padding: 1 2;
+    border: round #2a2b3d;
+    background: #1e2030;
+    overflow-y: auto;
+}
+
+/* ── Log screen ──────────────────────────────────────────────────────────── */
+
+#log-header {
+    height: 2;
+    padding: 0 1;
+    background: #1a1b26;
+    color: #565f89;
+}
+
+#log-filter {
+    height: 3;
+    margin: 0 1;
+    border: round #2a2b3d;
+    background: #1e2030;
+    color: #c0caf5;
+}
+
+#log-table {
+    height: 1fr;
+    border: round #2a2b3d;
+}
+
+/* ── Modals ──────────────────────────────────────────────────────────────── */
+
+_InputModal > Vertical {
+    background: #1e2030;
+    border: round #7aa2f7;
+}
+
+_InputModal Input {
+    background: #13141f;
+    border: round #2a2b3d;
+    color: #c0caf5;
+}
+
+_InputModal Input:focus {
+    border: round #7aa2f7;
+}
+
+OutputModal > Vertical {
+    background: #1e2030;
+    border: round #2a2b3d;
+}
+
+ConfirmDelete > Grid {
+    background: #1e2030;
+    border: round #f7768e;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+Button {
+    background: #2a2b3d;
+    color: #c0caf5;
+    border: none;
+}
+
+Button:hover {
+    background: #292e42;
+}
+
+Button.-primary {
+    background: #3d59a1;
+    color: #c0caf5;
+}
+
+Button.-primary:hover {
+    background: #7aa2f7;
+    color: #13141f;
+}
+
+Button.-error {
+    background: #8c1a2b;
+    color: #f7768e;
+}
+
+Button.-error:hover {
+    background: #f7768e;
+    color: #13141f;
+}
+
+/* ── Agent / Backup screens ──────────────────────────────────────────────── */
+
+#agent-help, #backup-help {
+    padding: 0 1;
+    height: 2;
+    color: #565f89;
+    background: #1a1b26;
+}
+
+#agent-table, #backup-table {
+    height: 1fr;
+    border: round #2a2b3d;
+}
