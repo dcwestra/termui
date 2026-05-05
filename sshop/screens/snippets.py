@@ -18,7 +18,6 @@ OKSSH_BIN = engine.OKSSH_BIN
 class SnippetsScreen(Screen):
     BINDINGS = [
         Binding("r", "run_snippet", "Run"),
-        Binding("R", "run_parallel", "Run ∥", show=False),
         Binding("g", "run_group", "Run on group", show=False),
         Binding("e", "edit_snippet", "Edit", show=False),
         Binding("a", "add", "Add"),
@@ -40,7 +39,7 @@ class SnippetsScreen(Screen):
             with Vertical(id="snip-detail-pane"):
                 yield Static("", id="snip-detail")
         yield KeyBar(rows=[[
-            ("r", "run"), ("R", "run ∥"), ("g", "run group"),
+            ("r", "run"), ("g", "run group"),
             ("e", "edit"), ("a", "add"), ("D", "delete"), ("q", "back"),
         ]])
 
@@ -104,22 +103,8 @@ class SnippetsScreen(Screen):
         s = self._focused_snippet()
         if not s:
             return
-        if not self._focused_alias:
-            self.notify("No alias selected — open Snippets from an alias row",
-                        severity="warning")
-            return
         with self.app.suspend():
-            subprocess.run([OKSSH_BIN, "snip", "run", s.name, self._focused_alias])
-
-    def action_run_parallel(self) -> None:
-        s = self._focused_snippet()
-        if not s:
-            return
-        if not self._focused_alias:
-            self.notify("No alias selected", severity="warning")
-            return
-        with self.app.suspend():
-            subprocess.run([OKSSH_BIN, "snip", "run", s.name, self._focused_alias, "--parallel"])
+            subprocess.run([OKSSH_BIN, "snip", "run", s.name])
 
     def action_edit_snippet(self) -> None:
         s = self._focused_snippet()
