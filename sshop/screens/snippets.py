@@ -8,7 +8,7 @@ from textual.widgets import Button, DataTable, SelectionList, Static
 from textual.containers import Horizontal, Vertical
 
 from sshop import engine
-from sshop.config import Snippet, load_aliases, load_snippets, load_tunnels
+from sshop.config import Snippet, load_aliases, load_bootstrapped_aliases, load_snippets, load_tunnels
 from sshop.widgets.stats_header import StatsHeader
 from sshop.widgets.keybar import KeyBar
 
@@ -94,12 +94,95 @@ class _RunOnModal(ModalScreen[list[str] | None]):
         self.dismiss(None)
 
 
+class _PushToModal(ModalScreen[list[str] | None]):
+    """Pick bootstrapped hosts to push the snippet list to."""
+
+    BINDINGS = [
+        Binding("enter", "confirm", "Push"),
+        Binding("escape", "cancel", "Cancel"),
+    ]
+
+    DEFAULT_CSS = """
+    _PushToModal {
+        align: center middle;
+    }
+    _PushToModal > Vertical {
+        width: 60;
+        height: auto;
+        max-height: 80vh;
+        padding: 1 2;
+        border: solid #9ece6a;
+        background: $surface;
+    }
+    _PushToModal #modal-title {
+        margin-bottom: 1;
+    }
+    _PushToModal SelectionList {
+        height: auto;
+        max-height: 20;
+        border: none;
+    }
+    _PushToModal #btn-row {
+        height: 3;
+        align-horizontal: right;
+        margin-top: 1;
+    }
+    _PushToModal Button {
+        margin-left: 1;
+        min-width: 10;
+    }
+    """
+
+    def __init__(self, hosts: list[str]):
+        super().__init__()
+        self._hosts = hosts
+
+    def compose(self) -> ComposeResult:
+        with Vertical():
+            yield Static(
+                "[bold #9ece6a]Push snippets[/bold #9ece6a]\n"
+                "[dim]Select hosts to sync — leave all unchecked to push to all[/dim]",
+                id="modal-title",
+            )
+            yield SelectionList(
+                *[(h, h, False) for h in self._hosts],
+                id="host-list",
+            )
+            with Horizontal(id="btn-row"):
+                yield Button("Push all", variant="success", id="btn-all")
+                yield Button("Push selected", variant="primary", id="btn-push")
+                yield Button("Cancel", variant="default", id="btn-cancel")
+
+    def on_mount(self) -> None:
+        self.query_one("#host-list", SelectionList).focus()
+
+    def action_confirm(self) -> None:
+        selected = list(self.query_one("#host-list", SelectionList).selected)
+        self.dismiss(selected if selected else self._hosts)
+
+    def action_cancel(self) -> None:
+        self.dismiss(None)
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-all":
+            self.dismiss(self._hosts)
+        elif event.button.id == "btn-push":
+            selected = list(self.query_one("#host-list", SelectionList).selected)
+            self.dismiss(selected if selected else None)
+        else:
+            self.dismiss(None)
+
+    def key_escape(self) -> None:
+        self.dismiss(None)
+
+
 class SnippetsScreen(Screen):
     BINDINGS = [
         Binding("r", "run_snippet", "Run"),
         Binding("g", "run_group", "Run on group", show=False),
         Binding("e", "edit_snippet", "Edit", show=False),
         Binding("a", "add", "Add"),
+        Binding("P", "push_snippets", "Push/sync", show=False),
         Binding("D", "delete", "Delete", show=False),
         Binding("escape,q", "dismiss", "Back"),
     ]
@@ -119,7 +202,7 @@ class SnippetsScreen(Screen):
                 yield Static("", id="snip-detail")
         yield KeyBar(rows=[[
             ("r", "run"), ("g", "run group"),
-            ("e", "edit"), ("a", "add"), ("D", "delete"), ("q", "back"),
+            ("e", "edit"), ("a", "add"), ("P", "push/sync"), ("D", "delete"), ("q", "back"),
         ]])
 
     def on_mount(self) -> None:
@@ -196,6 +279,22 @@ class SnippetsScreen(Screen):
             cmd.append("--parallel")
         with self.app.suspend():
             subprocess.run(cmd)
+
+    def action_push_snippets(self) -> None:
+        hosts = load_bootstrapped_aliases()
+        if not hosts:
+            self.notify("No bootstrapped hosts found", severity="warning")
+            return
+        self.app.push_screen(
+            _PushToModal(hosts),
+            callback=lambda targets: self._on_push_targets(targets),
+        )
+
+    def _on_push_targets(self, targets: list[str] | None) -> None:
+        if not targets:
+            return
+        with self.app.suspend():
+            subprocess.run([OKSSH_BIN, "snip", "push"] + targets)
 
     def action_edit_snippet(self) -> None:
         s = self._focused_snippet()

@@ -276,6 +276,16 @@ def load_templates() -> list[Template]:
     return templates
 
 
+def load_bootstrapped_aliases() -> list[str]:
+    """Return alias names that have the snippet widget installed."""
+    prefs = _parse_preferences()
+    result = []
+    for a in _parse_ssh_config():
+        if prefs.get(f"bootstrap_{a.name}", ""):
+            result.append(a.name)
+    return result
+
+
 def load_history(alias_filter: str | None = None) -> list[dict[str, str]]:
     """Returns list of {timestamp, alias, duration, exit_code} dicts."""
     entries = []
