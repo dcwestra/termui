@@ -125,7 +125,7 @@ def _parse_ssh_config() -> list[Alias]:
 
 
 def _parse_ini(path: Path) -> configparser.ConfigParser:
-    cp = configparser.ConfigParser(strict=False)
+    cp = configparser.ConfigParser(strict=False, interpolation=None)
     if path.exists():
         cp.read(path)
     return cp
